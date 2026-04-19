@@ -15,10 +15,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     && rm -rf /var/lib/apt/lists/*
 
-# CPU-only PyTorch 2.4 — natively supports NumPy 2.x, no pin needed
+# CPU-only PyTorch 2.11 — matches training torch version, supports NumPy 2.x natively
 RUN pip install --no-cache-dir \
-    torch==2.4.0+cpu \
-    torchvision==0.19.0+cpu \
+    torch==2.11.0+cpu \
     --index-url https://download.pytorch.org/whl/cpu
 
 # Install the sunsmarterjie/yolov12 fork — the exact codebase used during training.
