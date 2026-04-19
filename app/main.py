@@ -9,7 +9,7 @@ from app.services.detector import load_model
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    model_path = "egyptian_food/yolov12m_v16_video/weights/best.pt"
+    model_path = os.environ.get("MODEL_PATH", "models/best.pt")
     load_model(model_path)
     yield
 
