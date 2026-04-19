@@ -5,33 +5,33 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-# OpenCV runtime dependencies
+# Runtime deps + git (needed for pip install git+https)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libgl1 \
     libglib2.0-0 \
     libsm6 \
     libxext6 \
     libxrender1 \
+    git \
     && rm -rf /var/lib/apt/lists/*
 
-# CPU-only PyTorch (avoids downloading the ~2 GB CUDA build)
+# CPU-only PyTorch 2.4 — natively supports NumPy 2.x, no pin needed
 RUN pip install --no-cache-dir \
-    torch==2.2.2+cpu \
-    torchvision==0.17.2+cpu \
+    torch==2.4.0+cpu \
+    torchvision==0.19.0+cpu \
     --index-url https://download.pytorch.org/whl/cpu
 
-# Core inference deps — pin ultralytics to training version to match AAttn architecture
+# Install the sunsmarterjie/yolov12 fork — the exact codebase used during training.
+# The official PyPI ultralytics 8.3.63 does NOT have A2C2f/AAttn (YOLOv12 blocks);
+# the fork does and reports itself as version 8.3.63.
 RUN pip install --no-cache-dir \
-    "ultralytics==8.3.63" \
+    git+https://github.com/sunsmarterjie/yolov12.git \
     "opencv-python-headless>=4.9.0" \
     "timm>=1.0.0"
 
 # API layer
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-
-# Downgrade numpy LAST — torch 2.2.2 was compiled against NumPy 1.x ABI
-RUN pip install --no-cache-dir "numpy<2"
 
 COPY app/ ./app/
 
