@@ -20,9 +20,8 @@ RUN pip install --no-cache-dir \
     torchvision==0.17.2+cpu \
     --index-url https://download.pytorch.org/whl/cpu
 
-# Core inference deps — pin numpy<2 to match torch 2.2.2 compiled ABI
-RUN pip install --no-cache-dir "numpy<2" && \
-    pip install --no-cache-dir \
+# Core inference deps
+RUN pip install --no-cache-dir \
     "ultralytics>=8.3" \
     "opencv-python-headless>=4.9.0" \
     "timm>=1.0.0"
@@ -30,6 +29,9 @@ RUN pip install --no-cache-dir "numpy<2" && \
 # API layer
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+
+# Downgrade numpy LAST — torch 2.2.2 was compiled against NumPy 1.x ABI
+RUN pip install --no-cache-dir "numpy<2"
 
 COPY app/ ./app/
 
