@@ -20,9 +20,9 @@ RUN pip install --no-cache-dir \
     torchvision==0.17.2+cpu \
     --index-url https://download.pytorch.org/whl/cpu
 
-# Core inference deps
+# Core inference deps — pin ultralytics to training version to match AAttn architecture
 RUN pip install --no-cache-dir \
-    "ultralytics>=8.3" \
+    "ultralytics==8.3.63" \
     "opencv-python-headless>=4.9.0" \
     "timm>=1.0.0"
 
